@@ -20,11 +20,11 @@ export class AuthGuard implements CanActivate {
     }
 
     try {
-      // const { user, token: newToken } = await firstValueFrom(
-      //   this.client.send('verify.token', token),
-      // );
-      // request.user = user;
-      // request.token = newToken;
+      const { user, token: newToken } = await firstValueFrom(
+        this.client.send('security.refresh', token),
+      );
+      request.user = user;
+      request.token = newToken;
 
       request.user = { token };
 

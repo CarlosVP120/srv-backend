@@ -15,6 +15,7 @@ import { NATS_SERVICE } from '../config';
 import { ClientProxy, RpcException } from '@nestjs/microservices';
 import { catchError } from 'rxjs';
 import { User } from '../common/decorators/user.decorator';
+import { Token } from '../common/decorators/token.decorator';
 
 @Controller('security')
 export class SecurityController {
@@ -31,11 +32,10 @@ export class SecurityController {
 
   @UseGuards(AuthGuard)
   @Get('refresh')
-  refresh(@User() user: { token: string }) {
-    return this.client.send('security.refresh', user.token).pipe(
-      catchError((err) => {
-        throw new RpcException(err);
-      }),
-    );
+  refresh(
+    @User() user: { id: string; email: string; name: string },
+    @Token() token: string,
+  ) {
+    return { user, token };
   }
 }

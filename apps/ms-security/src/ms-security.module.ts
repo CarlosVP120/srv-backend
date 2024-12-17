@@ -1,10 +1,9 @@
 import { Module } from '@nestjs/common';
-import { MsSecurityController } from './ms-security.controller';
-import { MsSecurityService } from './ms-security.service';
+import { SecurityModule } from './security/security.module';
 
 @Module({
-  imports: [],
-  controllers: [MsSecurityController],
-  providers: [MsSecurityService],
+  imports: [SecurityModule],
+  controllers: [],
+  providers: [],
 })
 export class MsSecurityModule {}
