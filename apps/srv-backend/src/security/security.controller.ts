@@ -10,7 +10,7 @@ import {
   Inject,
 } from '@nestjs/common';
 import { LoginUserDto } from './dto/login-user.dto';
-import { AuthGuard } from './security.guard';
+import { SecurityGuard } from './security.guard';
 import { NATS_SERVICE } from '../config';
 import { ClientProxy, RpcException } from '@nestjs/microservices';
 import { catchError } from 'rxjs';
@@ -30,7 +30,7 @@ export class SecurityController {
     );
   }
 
-  @UseGuards(AuthGuard)
+  @UseGuards(SecurityGuard)
   @Get('refresh')
   refresh(
     @User() user: { id: string; email: string; name: string },

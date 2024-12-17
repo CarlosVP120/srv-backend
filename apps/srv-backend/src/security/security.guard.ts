@@ -9,7 +9,7 @@ import { Request } from 'express';
 import { firstValueFrom } from 'rxjs';
 import { NATS_SERVICE } from '../config';
 
-export class AuthGuard implements CanActivate {
+export class SecurityGuard implements CanActivate {
   constructor(@Inject(NATS_SERVICE) private readonly client: ClientProxy) {}
 
   async canActivate(context: ExecutionContext) {
