@@ -3,6 +3,9 @@ import { LoginUserDto } from './dto/login-user.dto';
 import { JwtService } from '@nestjs/jwt';
 import { RpcException } from '@nestjs/microservices';
 import { environments } from '../config';
+import { User } from 'apps/ms-security/src/entities/user.entity';
+import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
 
 const fakeUsers = [
   {
@@ -19,7 +22,11 @@ const fakeUsers = [
 
 @Injectable()
 export class SecurityService {
-  constructor(private readonly jwtService: JwtService) {}
+  constructor(
+    @InjectRepository(User)
+    private userRepository: Repository<User>,
+    private readonly jwtService: JwtService,
+  ) {}
 
   async login(loginUserDto: LoginUserDto) {
     const exist = fakeUsers.find((user) => user.email === loginUserDto.email);
@@ -86,6 +93,17 @@ export class SecurityService {
         user,
         token: this.signJwt(user),
       };
+    } catch (error) {
+      throw new RpcException({
+        status: 400,
+        message: error.message,
+      });
+    }
+  }
+
+  async findAllUsers() {
+    try {
+      return this.userRepository.find();
     } catch (error) {
       throw new RpcException({
         status: 400,

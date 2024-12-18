@@ -30,7 +30,6 @@ export class SecurityGuard implements CanActivate {
 
       return true;
     } catch (err) {
-      console.error(err);
       throw new RpcException(err); // Or return a "new UnauthorizedException()"
     }
   }

@@ -9,6 +9,15 @@ export class GlobalRpcExceptionFilter implements ExceptionFilter {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
 
+    // If error.status is not a valid HTTP status code or its a string, set it to 500
+    if (
+      (error.status && error.status < 100) ||
+      error.status > 599 ||
+      typeof error.status === 'string'
+    ) {
+      error.status = 500;
+    }
+
     response.status(error.status).json(error);
   }
 }

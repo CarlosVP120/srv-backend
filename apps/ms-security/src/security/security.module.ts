@@ -3,6 +3,9 @@ import { SecurityService } from './security.service';
 import { SecurityController } from './security.controller';
 import { JwtModule } from '@nestjs/jwt';
 import { environments } from '../config';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { User } from '../entities/user.entity';
+import { Diccionario } from 'apps/ms-security/src/entities/diccionario.entity';
 
 @Module({
   controllers: [SecurityController],
@@ -13,6 +16,7 @@ import { environments } from '../config';
       secret: environments.jwtSecret,
       signOptions: { expiresIn: '1h' },
     }),
+    TypeOrmModule.forFeature([User, Diccionario]),
   ],
 })
 export class SecurityModule {}

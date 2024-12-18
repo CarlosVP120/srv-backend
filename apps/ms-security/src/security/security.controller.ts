@@ -23,4 +23,9 @@ export class SecurityController {
   refresh(@Payload() token: string) {
     return this.securityService.refresh(token);
   }
+
+  @MessagePattern('security.findAllUsers')
+  findAllUsers() {
+    return this.securityService.findAllUsers();
+  }
 }

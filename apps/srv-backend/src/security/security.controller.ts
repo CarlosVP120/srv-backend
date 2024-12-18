@@ -28,4 +28,14 @@ export class SecurityController {
       }),
     );
   }
+
+  @UseGuards(SecurityGuard)
+  @Get('users')
+  findAllUsers() {
+    return this.client.send('security.findAllUsers', {}).pipe(
+      catchError((err) => {
+        throw new RpcException(err);
+      }),
+    );
+  }
 }
