@@ -12,6 +12,29 @@ export class EntityService {
     private readonly entityManager: EntityManager,
   ) {}
 
+  async listEntities() {
+    try {
+      const entities = this.entityManager.connection.entityMetadatas.map(
+        (metadata) => ({
+          name: metadata.tableName,
+          columns: metadata.columns.map((column) => ({
+            name: column.databaseName,
+            type: column.type,
+            isNullable: column.isNullable,
+            isPrimary: column.isPrimary,
+          })),
+        }),
+      );
+
+      return entities;
+    } catch (error) {
+      throw new RpcException({
+        status: 400,
+        message: error.message,
+      });
+    }
+  }
+
   async getEntity(getEntityDto: GetEntityDto) {
     try {
       const { entidad, params } = getEntityDto;

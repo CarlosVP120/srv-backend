@@ -19,6 +19,15 @@ import { catchError } from 'rxjs';
 export class EntityController {
   constructor(@Inject(NATS_SERVICE) private readonly client: ClientProxy) {}
 
+  @Get('list')
+  listEntities() {
+    return this.client.send('entity.list', {}).pipe(
+      catchError((err) => {
+        throw new RpcException(err);
+      }),
+    );
+  }
+
   @Post('get')
   get(@Body() getEntityDto: GetEntityDto) {
     return this.client.send('entity.get', getEntityDto).pipe(

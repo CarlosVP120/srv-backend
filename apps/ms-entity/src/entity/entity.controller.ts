@@ -8,6 +8,11 @@ import { GetEntityDto } from './dto/get-entity.dto';
 export class EntityController {
   constructor(private readonly entityService: EntityService) {}
 
+  @MessagePattern('entity.list')
+  async listEntities() {
+    return this.entityService.listEntities();
+  }
+
   @MessagePattern('entity.get')
   async getEntity(@Payload() getEntityDto: GetEntityDto) {
     return this.entityService.getEntity(getEntityDto);
