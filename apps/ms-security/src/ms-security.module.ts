@@ -2,8 +2,6 @@ import { Module } from '@nestjs/common';
 import { SecurityModule } from './security/security.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-console.log(__dirname + '/entities/*.entity.js');
-
 @Module({
   imports: [
     SecurityModule,

@@ -3,16 +3,16 @@ import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 @Entity('DICCIONARIO')
 export class Diccionario {
   @PrimaryGeneratedColumn('uuid', { name: 'ID' })
-  id: string;
+  ID: string;
 
   @Column({ name: 'DICCIONARIOLINK', type: 'raw', nullable: true })
-  diccionarioLink: string;
+  DICCIONARIOLINK: string;
 
   @Column({ name: 'MODULO', type: 'varchar2', length: 50 })
-  modulo: string;
+  MODULO: string;
 
   @Column({ name: 'NOMBRE', type: 'varchar2', length: 200 })
-  nombre: string;
+  NOMBRE: string;
 
   @Column({
     name: 'ES_BASE',
@@ -22,7 +22,7 @@ export class Diccionario {
     default: 0,
     nullable: true,
   })
-  esBase: number;
+  ES_BASE: number;
 
   @Column({
     name: 'ES_PERSONALIZADO',
@@ -32,16 +32,16 @@ export class Diccionario {
     default: 0,
     nullable: true,
   })
-  esPersonalizado: number;
+  ES_PERSONALIZADO: number;
 
   @Column({ name: 'DESCRIPCION', type: 'clob' })
-  descripcion: string;
+  DESCRIPCION: string;
 
   @Column({ name: 'TIPODEFINICION', type: 'varchar2', length: 50 })
-  tipoDefinicion: string;
+  TIPODEFINICION: string;
 
   @Column({ name: 'TIPOCONTENIDO', type: 'varchar2', length: 50 })
-  tipoContenido: string;
+  TIPOCONTENIDO: string;
 
   @Column({
     name: 'CONTENIDO_JSON',
@@ -49,7 +49,7 @@ export class Diccionario {
     default: '{}',
     nullable: true,
   })
-  contenidoJson: any;
+  CONTENIDO_JSON: any;
 
   @Column({
     name: 'OPCIONES_JSON',
@@ -57,7 +57,7 @@ export class Diccionario {
     default: '{}',
     nullable: true,
   })
-  opcionesJson: any;
+  OPCIONES_JSON: any;
 
   @Column({
     name: 'FECHA_UPDATE',
@@ -65,7 +65,7 @@ export class Diccionario {
     default: () => 'SYSDATE',
     nullable: true,
   })
-  fechaUpdate: Date;
+  FECHA_UPDATE: Date;
 
   @Column({
     name: 'STATUS',
@@ -74,5 +74,5 @@ export class Diccionario {
     default: 'ACTIVO',
     nullable: true,
   })
-  status: string;
+  STATUS: string;
 }
