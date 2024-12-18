@@ -1,7 +1,9 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { EntityModule } from './entity/entity.module';
-import { Diccionario } from './entities/diccionario.entity';
+import { join } from 'path';
+
+console.log(join(__dirname, '**', '*.entity.{ts,js}'));
 
 @Module({
   imports: [
@@ -14,8 +16,7 @@ import { Diccionario } from './entities/diccionario.entity';
       serviceName: 'idrallpdb1.db.net',
       autoLoadEntities: true,
       synchronize: false,
-      // entities: [__dirname + '/entities/*.entity.js'],
-      entities: [Diccionario],
+      entities: [join(__dirname, '**', '*.entity.{ts,js}')],
     }),
     EntityModule,
   ],

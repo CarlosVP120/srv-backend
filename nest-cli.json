@@ -34,6 +34,7 @@
       "entryFile": "main",
       "sourceRoot": "apps/ms-entity/src",
       "compilerOptions": {
+        "webpack": false,
         "tsConfigPath": "apps/ms-entity/tsconfig.app.json"
       }
     }

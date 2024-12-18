@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { SecurityModule } from './security/security.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { join } from 'path';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       serviceName: 'idrallpdb1.db.net',
       autoLoadEntities: true,
       synchronize: false,
+      entities: [join(__dirname, '**', '*.entity.{ts,js}')],
     }),
   ],
   controllers: [],
