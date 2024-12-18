@@ -5,7 +5,6 @@ import { JwtModule } from '@nestjs/jwt';
 import { environments } from '../config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from '../entities/user.entity';
-import { Diccionario } from 'apps/ms-security/src/entities/diccionario.entity';
 
 @Module({
   controllers: [SecurityController],
@@ -16,7 +15,7 @@ import { Diccionario } from 'apps/ms-security/src/entities/diccionario.entity';
       secret: environments.jwtSecret,
       signOptions: { expiresIn: '1h' },
     }),
-    TypeOrmModule.forFeature([User, Diccionario]),
+    TypeOrmModule.forFeature([User]),
   ],
 })
 export class SecurityModule {}
