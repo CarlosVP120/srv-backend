@@ -4,7 +4,7 @@ import {
   Inject,
   UnauthorizedException,
 } from '@nestjs/common';
-import { ClientProxy } from '@nestjs/microservices';
+import { ClientProxy, RpcException } from '@nestjs/microservices';
 import { Request } from 'express';
 import { firstValueFrom } from 'rxjs';
 import { NATS_SERVICE } from '../config';
@@ -31,7 +31,7 @@ export class SecurityGuard implements CanActivate {
       return true;
     } catch (err) {
       console.error(err);
-      throw new UnauthorizedException();
+      throw new RpcException(err); // Or return a "new UnauthorizedException()"
     }
   }
 

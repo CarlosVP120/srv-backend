@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Inject, UseGuards } from '@nestjs/common';
+import { Controller, Post, Body, Inject, UseGuards, Get } from '@nestjs/common';
 import { LoginUserDto } from './dto/login-user.dto';
 import { NATS_SERVICE } from '../config';
 import { ClientProxy, RpcException } from '@nestjs/microservices';
@@ -20,7 +20,7 @@ export class SecurityController {
   }
 
   @UseGuards(SecurityGuard)
-  @Post('refresh')
+  @Get('refresh')
   refresh(@Token() token: string) {
     return this.client.send('security.refresh', token).pipe(
       catchError((err) => {
