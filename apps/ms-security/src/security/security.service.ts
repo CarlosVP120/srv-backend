@@ -29,7 +29,9 @@ export class SecurityService {
   ) {}
 
   async login(loginUserDto: LoginUserDto) {
-    const exist = fakeUsers.find((user) => user.email === loginUserDto.email);
+    const exist = await this.userRepository.findOne({
+      where: { EMAIL: loginUserDto.email },
+    });
 
     if (!exist) {
       throw new RpcException({
@@ -38,7 +40,7 @@ export class SecurityService {
       });
     }
 
-    const isMatch = loginUserDto.password === exist.password;
+    const isMatch = loginUserDto.password === exist.PASS;
 
     if (!isMatch) {
       throw new RpcException({
@@ -47,7 +49,7 @@ export class SecurityService {
       });
     }
 
-    const { password: _, ...rest } = exist;
+    const { PASS: _, ...rest } = exist;
 
     return {
       user: rest,
@@ -103,7 +105,30 @@ export class SecurityService {
 
   async findAllUsers() {
     try {
-      return this.userRepository.find();
+      const users = await this.userRepository.find();
+
+      return users.map((user) => {
+        const { PASS: _, ...rest } = user;
+        return rest;
+      });
+    } catch (error) {
+      throw new RpcException({
+        status: 400,
+        message: error.message,
+      });
+    }
+  }
+
+  async findUserByEmail(email: string) {
+    try {
+      const user = await this.userRepository.findOne({
+        where: { EMAIL: email },
+      });
+
+      // Separate PASS from user
+      const { PASS: _, ...rest } = user;
+
+      return rest;
     } catch (error) {
       throw new RpcException({
         status: 400,

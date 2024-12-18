@@ -28,4 +28,9 @@ export class SecurityController {
   findAllUsers() {
     return this.securityService.findAllUsers();
   }
+
+  @MessagePattern('security.findUserByEmail')
+  findUserByEmail(@Payload() email: string) {
+    return this.securityService.findUserByEmail(email);
+  }
 }
