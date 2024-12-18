@@ -1,20 +1,9 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-  UseGuards,
-  Inject,
-} from '@nestjs/common';
+import { Controller, Post, Body, Inject, UseGuards } from '@nestjs/common';
 import { LoginUserDto } from './dto/login-user.dto';
-import { SecurityGuard } from './security.guard';
 import { NATS_SERVICE } from '../config';
 import { ClientProxy, RpcException } from '@nestjs/microservices';
 import { catchError } from 'rxjs';
-import { User } from '../common/decorators/user.decorator';
+import { SecurityGuard } from './security.guard';
 import { Token } from '../common/decorators/token.decorator';
 
 @Controller('security')
@@ -31,11 +20,12 @@ export class SecurityController {
   }
 
   @UseGuards(SecurityGuard)
-  @Get('refresh')
-  refresh(
-    @User() user: { id: string; email: string; name: string },
-    @Token() token: string,
-  ) {
-    return { user, token };
+  @Post('refresh')
+  refresh(@Token() token: string) {
+    return this.client.send('security.refresh', token).pipe(
+      catchError((err) => {
+        throw new RpcException(err);
+      }),
+    );
   }
 }

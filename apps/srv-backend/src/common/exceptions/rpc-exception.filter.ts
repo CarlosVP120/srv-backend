@@ -9,6 +9,6 @@ export class GlobalRpcExceptionFilter implements ExceptionFilter {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
 
-    response.status(error.statusCode).json(error);
+    response.status(error.status).json(error);
   }
 }

@@ -7,9 +7,16 @@ import { LoginUserDto } from './dto/login-user.dto';
 export class SecurityController {
   constructor(private readonly securityService: SecurityService) {}
 
+  // Login user
   @MessagePattern('security.login')
   login(@Payload() loginUserDto: LoginUserDto) {
     return this.securityService.login(loginUserDto);
+  }
+
+  // Verify the token
+  @MessagePattern('security.verify')
+  verify(@Payload() token: string) {
+    return this.securityService.verify(token);
   }
 
   @MessagePattern('security.refresh')

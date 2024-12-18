@@ -20,13 +20,13 @@ export class SecurityGuard implements CanActivate {
     }
 
     try {
-      const { user, token: newToken } = await firstValueFrom(
-        this.client.send('security.refresh', token),
+      // Check if token is valid
+      const { user, token: validatedToken } = await firstValueFrom(
+        this.client.send('security.verify', token),
       );
-      request.user = user;
-      request.token = newToken;
 
-      request.user = { token };
+      request.user = user;
+      request.token = validatedToken;
 
       return true;
     } catch (err) {
