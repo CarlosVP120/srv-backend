@@ -27,6 +27,15 @@
       "compilerOptions": {
         "tsConfigPath": "apps/ms-security/tsconfig.app.json"
       }
+    },
+    "ms-entity": {
+      "type": "application",
+      "root": "apps/ms-entity",
+      "entryFile": "main",
+      "sourceRoot": "apps/ms-entity/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/ms-entity/tsconfig.app.json"
+      }
     }
   }
 }
