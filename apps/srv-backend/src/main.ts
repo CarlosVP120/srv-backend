@@ -16,6 +16,8 @@ async function bootstrap() {
     }),
   );
   await app.listen(environmentVariables.port ?? 4000);
-  logger.log(`Server running on port ${environmentVariables.port ?? 4000}`);
+  logger.log(
+    `SRV-BACKEND Gateway running on port ${environmentVariables.port ?? 4000}`,
+  );
 }
 bootstrap();
