@@ -51,8 +51,6 @@ export class SecurityService {
       });
     }
 
-    console.log('exist', exist);
-
     const jwtContent = {
       userLink: exist.ID,
       isSuper: exist.ISSUPERVISOR,
@@ -93,6 +91,8 @@ export class SecurityService {
         sub: _,
         iat: __,
         exp: ___,
+        iss: _____,
+        sub: ______,
         ...user
       } = this.jwtService.verify(token, {
         secret: environments.jwtSecret,
