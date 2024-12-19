@@ -6,6 +6,7 @@ import { environments } from '../config';
 import { User } from 'apps/ms-security/src/entities/user.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
+import { CryptoUtil } from '../shared/utils/crypto.util';
 
 const fakeUsers = [
   {
@@ -40,7 +41,8 @@ export class SecurityService {
       });
     }
 
-    const isMatch = loginUserDto.password === exist.PASS;
+    const decryptedStoredPass = CryptoUtil.decryptString(exist.PASS);
+    const isMatch = loginUserDto.password === decryptedStoredPass;
 
     if (!isMatch) {
       throw new RpcException({
