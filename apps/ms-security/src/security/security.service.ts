@@ -42,7 +42,7 @@ export class SecurityService {
     }
 
     const decryptedStoredPass = CryptoUtil.decryptString(exist.PASS);
-    const isMatch = loginUserDto.password === decryptedStoredPass;
+    const isMatch = loginUserDto.pass === decryptedStoredPass;
 
     if (!isMatch) {
       throw new RpcException({

@@ -6,6 +6,7 @@ import {
   Delete,
   Param,
   Inject,
+  UseGuards,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
 
@@ -14,11 +15,13 @@ import { ClientProxy, RpcException } from '@nestjs/microservices';
 import { GetEntityDto } from './dto/get-entity.dto';
 import { UpsertEntityDto } from './dto/upsert-entity.dto';
 import { catchError } from 'rxjs';
+import { SecurityGuard } from '../security/security.guard';
 
 @Controller('entity')
 export class EntityController {
   constructor(@Inject(NATS_SERVICE) private readonly client: ClientProxy) {}
 
+  @UseGuards(SecurityGuard)
   @Get('list')
   listEntities() {
     return this.client.send('entity.list', {}).pipe(
@@ -28,6 +31,7 @@ export class EntityController {
     );
   }
 
+  @UseGuards(SecurityGuard)
   @Post('get')
   get(@Body() getEntityDto: GetEntityDto) {
     return this.client.send('entity.get', getEntityDto).pipe(
@@ -37,6 +41,7 @@ export class EntityController {
     );
   }
 
+  @UseGuards(SecurityGuard)
   @Post('upsert')
   upsert(@Body() upsertEntityDto: UpsertEntityDto) {
     return this.client.send('entity.upsert', upsertEntityDto).pipe(
