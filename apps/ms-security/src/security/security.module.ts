@@ -13,7 +13,12 @@ import { User } from '../entities/user.entity';
     JwtModule.register({
       global: true,
       secret: environments.jwtSecret,
-      signOptions: { expiresIn: '1h' },
+      signOptions: {
+        expiresIn: '1h',
+        algorithm: 'HS256',
+        issuer: 'iDrall',
+        subject: 'iDrall API Token',
+      },
     }),
     TypeOrmModule.forFeature([User]),
   ],

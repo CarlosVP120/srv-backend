@@ -22,7 +22,7 @@ async function bootstrap() {
       forbidNonWhitelisted: true,
     }),
   );
-  app.useGlobalInterceptors(new BufferToHexInterceptor());
+  // app.useGlobalInterceptors(new BufferToHexInterceptor());
 
   await app.listen();
 

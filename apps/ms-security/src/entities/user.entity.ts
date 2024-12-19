@@ -1,8 +1,12 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, PrimaryColumn } from 'typeorm';
+import { BufferToHexTransformer } from '../shared/transformers/buffer-to-hex.transformer';
 
 @Entity('USUARIO')
 export class User {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryColumn('uuid', {
+    primary: true,
+    transformer: new BufferToHexTransformer(),
+  })
   ID: string;
 
   @Column({

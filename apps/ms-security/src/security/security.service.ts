@@ -49,11 +49,16 @@ export class SecurityService {
       });
     }
 
-    const { PASS: _, ...rest } = exist;
+    console.log('exist', exist);
+
+    const jwtContent = {
+      userLink: exist.ID,
+      isSuper: exist.ISSUPERVISOR,
+    };
 
     return {
-      user: rest,
-      token: this.signJwt(rest),
+      id: exist.ID,
+      token: this.signJwt(jwtContent),
     };
   }
 
