@@ -48,7 +48,7 @@ export class SecurityController {
   }
 
   @UseGuards(SecurityGuard)
-  @Get('users/:email')
+  @Get('user/:email')
   findUserByEmail(@Param('email') email: string) {
     return this.client.send('security.findUserByEmail', email).pipe(
       catchError((err) => {
