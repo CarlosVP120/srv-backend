@@ -3,15 +3,13 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { EntityModule } from './entity/entity.module';
 import { join } from 'path';
 
-console.log(join(__dirname, '**', '*.entity.{ts,js}'));
-
 @Module({
   imports: [
     TypeOrmModule.forRoot({
       type: 'oracle',
       host: 'srv-data',
       port: 1521,
-      username: 'EMPRESA_01',
+      username: 'IDRALL_ECOMMERCE',
       password: '1DrallN3w23',
       serviceName: 'idrallpdb1.db.net',
       autoLoadEntities: true,

@@ -33,4 +33,9 @@ export class SecurityController {
   findUserByEmail(@Payload() email: string) {
     return this.securityService.findUserByEmail(email);
   }
+
+  @MessagePattern('security.getAccess')
+  getAccess(@Payload() token: string) {
+    return this.securityService.getAccess(token);
+  }
 }

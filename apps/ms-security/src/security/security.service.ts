@@ -3,34 +3,25 @@ import { LoginUserDto } from './dto/login-user.dto';
 import { JwtService } from '@nestjs/jwt';
 import { RpcException } from '@nestjs/microservices';
 import { environments } from '../config';
-import { User } from 'apps/ms-security/src/entities/user.entity';
-import { Repository } from 'typeorm';
-import { InjectRepository } from '@nestjs/typeorm';
+import { EntityManager } from 'typeorm';
+import { InjectEntityManager } from '@nestjs/typeorm';
 import { CryptoUtil } from '../shared/utils/crypto.util';
-
-const fakeUsers = [
-  {
-    id: '1',
-    email: 'carlos@gmail.com',
-    password: '123456',
-  },
-  {
-    id: '2',
-    email: 'carlos@gmail.com',
-    password: '123456',
-  },
-];
+import { Usuario } from '../entities/usuario.entity';
+import { UsuarioEmpresaSucursal } from '../entities/usuario_empresa_sucursal.entity';
+import { Empresa } from '../entities/empresa.entity';
+import { Sucursal } from '../entities/sucursal.entity';
+import { AccessResponseDto } from './dto/access-response.dto';
 
 @Injectable()
 export class SecurityService {
   constructor(
-    @InjectRepository(User)
-    private userRepository: Repository<User>,
+    @InjectEntityManager()
+    private readonly entityManager: EntityManager,
     private readonly jwtService: JwtService,
   ) {}
 
   async login(loginUserDto: LoginUserDto) {
-    const exist = await this.userRepository.findOne({
+    const exist = await this.entityManager.findOne(Usuario, {
       where: { EMAIL: loginUserDto.email },
     });
 
@@ -60,6 +51,27 @@ export class SecurityService {
       id: exist.ID,
       token: this.signJwt(jwtContent),
     };
+
+    // try {
+    //   const entities = this.entityManager.connection.entityMetadatas.map(
+    //     (metadata) => ({
+    //       name: metadata.tableName,
+    //       columns: metadata.columns.map((column) => ({
+    //         name: column.databaseName,
+    //         type: column.type,
+    //         isNullable: column.isNullable,
+    //         isPrimary: column.isPrimary,
+    //       })),
+    //     }),
+    //   );
+
+    //   return entities;
+    // } catch (error) {
+    //   throw new RpcException({
+    //     status: 400,
+    //     message: error.message,
+    //   });
+    // }
   }
 
   async verify(token: string) {
@@ -112,7 +124,7 @@ export class SecurityService {
 
   async findAllUsers() {
     try {
-      const users = await this.userRepository.find();
+      const users = await this.entityManager.find(Usuario);
 
       return users.map((user) => {
         const { PASS: _, ...rest } = user;
@@ -128,7 +140,7 @@ export class SecurityService {
 
   async findUserByEmail(email: string) {
     try {
-      const user = await this.userRepository.findOne({
+      const user = await this.entityManager.findOne(Usuario, {
         where: { EMAIL: email },
       });
 
@@ -136,6 +148,73 @@ export class SecurityService {
       const { PASS: _, ...rest } = user;
 
       return rest;
+    } catch (error) {
+      throw new RpcException({
+        status: 400,
+        message: error.message,
+      });
+    }
+  }
+
+  async getAccess(token: string): Promise<AccessResponseDto> {
+    try {
+      const { userLink, isSuper } = this.jwtService.verify(token, {
+        secret: environments.jwtSecret,
+      });
+
+      // Get all companies and their branches that the user has access to
+      const query = this.entityManager
+        .createQueryBuilder(Empresa, 'e')
+        .select(['e.ID', 'e.NOMBRE', 'e.STATUS']);
+
+      if (!isSuper) {
+        // For regular users, only get companies they have access to
+        query.innerJoin(
+          UsuarioEmpresaSucursal,
+          'ues',
+          'ues.EMPRESALINK = e.ID AND ues.USUARIOLINK = :userLink',
+          { userLink },
+        );
+      }
+
+      const empresas = await query.getMany();
+
+      // For each company, get its branches
+      const result = await Promise.all(
+        empresas.map(async (empresa) => {
+          const branchQuery = this.entityManager
+            .createQueryBuilder(Sucursal, 's')
+            .select(['s.ID', 's.NOMBRE', 's.CIUDAD', 's.STATUS'])
+            .where('s.EMPRESALINK = :empresaId', { empresaId: empresa.ID });
+
+          if (!isSuper) {
+            branchQuery.innerJoin(
+              UsuarioEmpresaSucursal,
+              'ues',
+              'ues.SUCURSALLINK = s.ID AND ues.USUARIOLINK = :userLink',
+              { userLink },
+            );
+          }
+
+          const sucursales = await branchQuery.getMany();
+
+          return {
+            id: empresa.ID,
+            nombre: empresa.NOMBRE,
+            status: empresa.STATUS,
+            sucursal: sucursales.map((s) => ({
+              id: s.ID,
+              nombre: s.NOMBRE,
+              ciudad: s.CIUDAD,
+              status: s.STATUS,
+            })),
+          };
+        }),
+      );
+
+      return {
+        data: result,
+      } as any; // Using any here to match the expected response format
     } catch (error) {
       throw new RpcException({
         status: 400,

@@ -56,4 +56,14 @@ export class SecurityController {
       }),
     );
   }
+
+  @UseGuards(SecurityGuard)
+  @Get('access')
+  getAccess(@Token() token: string) {
+    return this.client.send('security.getAccess', token).pipe(
+      catchError((err) => {
+        throw new RpcException(err);
+      }),
+    );
+  }
 }

@@ -2,7 +2,7 @@ import { Entity, Column, PrimaryColumn } from 'typeorm';
 import { BufferToHexTransformer } from '../shared/transformers/buffer-to-hex.transformer';
 
 @Entity('USUARIO')
-export class User {
+export class Usuario {
   @PrimaryColumn('uuid', {
     primary: true,
     transformer: new BufferToHexTransformer(),

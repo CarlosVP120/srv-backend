@@ -4,7 +4,7 @@ import { SecurityController } from './security.controller';
 import { JwtModule } from '@nestjs/jwt';
 import { environments } from '../config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from '../entities/user.entity';
+import { Usuario } from '../entities/usuario.entity';
 
 @Module({
   controllers: [SecurityController],
@@ -20,7 +20,6 @@ import { User } from '../entities/user.entity';
         subject: 'iDrall API Token',
       },
     }),
-    TypeOrmModule.forFeature([User]),
   ],
 })
 export class SecurityModule {}

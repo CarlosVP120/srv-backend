@@ -25,6 +25,7 @@
       "entryFile": "main",
       "sourceRoot": "apps/ms-security/src",
       "compilerOptions": {
+        "webpack": false,
         "tsConfigPath": "apps/ms-security/tsconfig.app.json"
       }
     },
