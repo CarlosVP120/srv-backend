@@ -1,8 +1,12 @@
-import { Entity, Column, PrimaryColumn } from 'typeorm';
+import { Entity, Column, PrimaryColumn, OneToMany } from 'typeorm';
 import { BufferToHexTransformer } from '../shared/transformers/buffer-to-hex.transformer';
+import { Item } from './item.entity';
 
 @Entity('PRODUCTO')
 export class Producto {
+  @OneToMany(() => Item, (item) => item.producto)
+  variants: Item[];
+
   @PrimaryColumn('uuid', {
     primary: true,
     transformer: new BufferToHexTransformer(),

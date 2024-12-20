@@ -1,5 +1,6 @@
-import { Entity, Column, PrimaryColumn } from 'typeorm';
+import { Entity, Column, PrimaryColumn, ManyToOne, JoinColumn } from 'typeorm';
 import { BufferToHexTransformer } from '../shared/transformers/buffer-to-hex.transformer';
+import { Producto } from './producto.entity';
 
 @Entity('ITEM')
 export class Item {
@@ -8,6 +9,10 @@ export class Item {
     transformer: new BufferToHexTransformer(),
   })
   ID: string;
+
+  @ManyToOne(() => Producto, (producto) => producto.variants)
+  @JoinColumn({ name: 'PRODUCTOLINK' })
+  producto: Producto;
 
   @Column('uuid', {
     nullable: false,

@@ -4,6 +4,7 @@ import { RpcException } from '@nestjs/microservices';
 import { DatabaseConnectionService } from '../database/database-connection.service';
 import { UpsertEntityDto } from '../entity/dto/upsert-entity.dto';
 import { GetEntityDto } from '../entity/dto/get-entity.dto';
+import { Producto } from '../entities/producto.entity';
 
 @Injectable()
 export class EcommerceService {
@@ -13,7 +14,7 @@ export class EcommerceService {
 
   async getProducts(getEntityDto: GetEntityDto) {
     try {
-      const { entidad, params, empresalink } = getEntityDto;
+      const { params, empresalink } = getEntityDto;
       const { order, filter, pagesize = 10, page = 1 } = params;
 
       // Get the connection for this empresa
@@ -33,12 +34,15 @@ export class EcommerceService {
       }
 
       const [data, total] = await dataSource
-        .getRepository(entidad)
+        .getRepository(Producto)
         .findAndCount({
           where: processedFilter,
           order: order ? JSON.parse(order) : undefined,
           skip: (page - 1) * pagesize,
           take: pagesize,
+          relations: {
+            variants: true,
+          },
         });
 
       return {
