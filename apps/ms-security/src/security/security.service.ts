@@ -223,6 +223,28 @@ export class SecurityService {
     }
   }
 
+  async getEmpresaInfo(empresalink: string) {
+    try {
+      const empresa = await this.entityManager.findOne(Empresa, {
+        where: { ID: empresalink },
+      });
+
+      if (!empresa) {
+        throw new RpcException({
+          status: 404,
+          message: 'Empresa not found',
+        });
+      }
+
+      return empresa;
+    } catch (error) {
+      throw new RpcException({
+        status: 400,
+        message: error.message,
+      });
+    }
+  }
+
   signJwt(payload: any) {
     return this.jwtService.sign(payload);
   }

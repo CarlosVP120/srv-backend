@@ -38,4 +38,9 @@ export class SecurityController {
   getAccess(@Payload() token: string) {
     return this.securityService.getAccess(token);
   }
+
+  @MessagePattern('security.getEmpresaInfo')
+  getEmpresaInfo(@Payload() empresalink: string) {
+    return this.securityService.getEmpresaInfo(empresalink);
+  }
 }

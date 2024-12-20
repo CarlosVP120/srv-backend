@@ -24,7 +24,13 @@ export class EntityController {
   }
 
   @MessagePattern('entity.delete')
-  async deleteEntity(@Payload() payload: { entidad: string; id: string }) {
-    return this.entityService.deleteEntity(payload.entidad, payload.id);
+  async deleteEntity(
+    @Payload() payload: { entidad: string; id: string; empresalink: string },
+  ) {
+    return this.entityService.deleteEntity(
+      payload.entidad,
+      payload.id,
+      payload.empresalink,
+    );
   }
 }
