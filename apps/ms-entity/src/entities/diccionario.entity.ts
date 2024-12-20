@@ -1,21 +1,35 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, PrimaryColumn } from 'typeorm';
+import { BufferToHexTransformer } from '../shared/transformers/buffer-to-hex.transformer';
 
 @Entity('DICCIONARIO')
 export class Diccionario {
-  @PrimaryGeneratedColumn('uuid', { name: 'ID' })
+  @PrimaryColumn('uuid', {
+    primary: true,
+    transformer: new BufferToHexTransformer(),
+  })
   ID: string;
 
-  @Column({ name: 'DICCIONARIOLINK', type: 'raw', nullable: true })
+  @Column('uuid', {
+    nullable: true,
+    transformer: new BufferToHexTransformer(),
+  })
   DICCIONARIOLINK: string;
 
-  @Column({ name: 'MODULO', type: 'varchar2', length: 50 })
+  @Column({
+    type: 'varchar',
+    length: 50,
+    nullable: false,
+  })
   MODULO: string;
 
-  @Column({ name: 'NOMBRE', type: 'varchar2', length: 200 })
+  @Column({
+    type: 'varchar',
+    length: 200,
+    nullable: false,
+  })
   NOMBRE: string;
 
   @Column({
-    name: 'ES_BASE',
     type: 'number',
     precision: 1,
     scale: 0,
@@ -25,7 +39,6 @@ export class Diccionario {
   ES_BASE: number;
 
   @Column({
-    name: 'ES_PERSONALIZADO',
     type: 'number',
     precision: 1,
     scale: 0,
@@ -34,45 +47,52 @@ export class Diccionario {
   })
   ES_PERSONALIZADO: number;
 
-  @Column({ name: 'DESCRIPCION', type: 'clob' })
+  @Column({
+    type: 'clob',
+    nullable: false,
+  })
   DESCRIPCION: string;
 
-  @Column({ name: 'TIPODEFINICION', type: 'varchar2', length: 50 })
+  @Column({
+    type: 'varchar',
+    length: 50,
+    nullable: false,
+  })
   TIPODEFINICION: string;
 
-  @Column({ name: 'TIPOCONTENIDO', type: 'varchar2', length: 50 })
+  @Column({
+    type: 'varchar',
+    length: 50,
+    nullable: false,
+  })
   TIPOCONTENIDO: string;
 
   @Column({
-    name: 'CONTENIDO_JSON',
     type: 'json',
-    default: '{}',
     nullable: true,
+    default: '{}',
   })
-  CONTENIDO_JSON: any;
+  CONTENIDO_JSON: Record<string, any>;
 
   @Column({
-    name: 'OPCIONES_JSON',
     type: 'json',
-    default: '{}',
     nullable: true,
+    default: '{}',
   })
-  OPCIONES_JSON: any;
+  OPCIONES_JSON: Record<string, any>;
 
   @Column({
-    name: 'FECHA_UPDATE',
     type: 'date',
-    default: () => 'SYSDATE',
     nullable: true,
+    default: () => 'CURRENT_TIMESTAMP',
   })
   FECHA_UPDATE: Date;
 
   @Column({
-    name: 'STATUS',
-    type: 'varchar2',
+    type: 'varchar',
     length: 20,
-    default: 'ACTIVO',
     nullable: true,
+    default: 'ACTIVO',
   })
   STATUS: string;
 }
