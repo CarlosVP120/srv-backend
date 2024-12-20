@@ -67,10 +67,12 @@ export class EntityService {
 
       return {
         data,
-        total,
-        page,
-        pagesize,
-        pages: Math.ceil(total / pagesize),
+        info: {
+          total,
+          page,
+          pagesize,
+          pages: Math.ceil(total / pagesize),
+        },
       };
     } catch (error) {
       throw new RpcException({
