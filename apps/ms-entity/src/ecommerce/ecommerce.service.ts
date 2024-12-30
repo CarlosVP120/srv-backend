@@ -1,10 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { Like } from 'typeorm';
+import { Like, In } from 'typeorm';
 import { RpcException } from '@nestjs/microservices';
 import { DatabaseConnectionService } from '../database/database-connection.service';
 import { UpsertEntityDto } from '../entity/dto/upsert-entity.dto';
 import { GetEntityDto } from '../entity/dto/get-entity.dto';
 import { Producto } from '../entities/producto.entity';
+import { ProductoClasifica } from '../entities/producto_clasifica.entity';
 
 @Injectable()
 export class EcommerceService {
@@ -33,7 +34,7 @@ export class EcommerceService {
         });
       }
 
-      const [data, total] = await dataSource
+      const [products, total] = await dataSource
         .getRepository(Producto)
         .findAndCount({
           where: processedFilter,
@@ -44,6 +45,44 @@ export class EcommerceService {
             variants: true,
           },
         });
+
+      // Get all unique category IDs from the products
+      const categoryIds = new Set<string>();
+      products.forEach((product) => {
+        const categorias = product.CLASIFICA_JSON?.CATEGORIA || [];
+        categorias.forEach((id) => categoryIds.add(id));
+      });
+
+      // Fetch all categories in a single query if there are any category IDs
+      const categories =
+        categoryIds.size > 0
+          ? await dataSource.getRepository(ProductoClasifica).find({
+              where: {
+                ID: In([...categoryIds]),
+              },
+            })
+          : [];
+
+      // Create a map of category ID to category name
+      const categoryMap = new Map(
+        categories.map((cat) => [cat.ID, cat.NOMBRE]),
+      );
+
+      // Transform the response to include category names in CLASIFICA_JSON
+      const data = products.map((product) => {
+        const categoriaIds = product.CLASIFICA_JSON?.CATEGORIA || [];
+
+        return {
+          ...product,
+          CLASIFICA_JSON: {
+            ...product.CLASIFICA_JSON,
+            CATEGORIA: categoriaIds.map((id) => ({
+              id,
+              nombre: categoryMap.get(id) || '',
+            })),
+          },
+        };
+      });
 
       return {
         data,
